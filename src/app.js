@@ -16,6 +16,11 @@ app.get('/api/ping', (req, res) => {
     res.json({ mensaje: 'El servidor funciona ✅' });
 });
 
+app.post('/api/tareas', (req, res) => {
+    console.log(req.body);
+    res.json({mensaje: 'Enviando desde el front al back °°°'});
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
