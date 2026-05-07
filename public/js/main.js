@@ -2,6 +2,18 @@ const boton = document.getElementById('btnAgregar');
 const input = document.getElementById('inputTarea');
 const unorderedList = document.getElementById('unorderedListTareas');
 
+async function cargarTareas() {
+    const respuesta = await fetch('http://localhost:3000/api/tareas');
+    const tareas = await respuesta.json();
+    tareas.forEach(element => {
+        const list = document.createElement('li');
+        list.textContent = element.descripcion;
+        unorderedList.appendChild(list)
+    });
+}
+
+cargarTareas();
+
 boton.addEventListener('click', async function(){
     if(input.value.trim() === ""){
         return

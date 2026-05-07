@@ -28,6 +28,15 @@ app.post('/api/tareas', async (req, res) => {
     }
 });
 
+app.get('/api/tareas', async (req, res) => {
+    try{
+        const resultado = await pool.query('SELECT * FROM tareas');
+        res.json(resultado.rows);
+    }catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
