@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const pool = require('./db');
 require('dotenv').config();
 
 const app = express();
@@ -16,9 +17,15 @@ app.get('/api/ping', (req, res) => {
     res.json({ mensaje: 'El servidor funciona ✅' });
 });
 
-app.post('/api/tareas', (req, res) => {
-    console.log(req.body);
-    res.json({mensaje: 'Enviando desde el front al back °°°'});
+app.post('/api/tareas', async (req, res) => {
+    try {
+        const { tarea } = req.body;
+        await pool.query('INSERT INTO tareas (descripcion) VALUES ($1)', [tarea]);
+        res.json({ mensaje: 'Tarea guardada!' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.listen(PORT, () => {
