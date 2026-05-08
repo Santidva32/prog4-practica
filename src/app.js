@@ -20,8 +20,11 @@ app.get('/api/ping', (req, res) => {
 app.post('/api/tareas', async (req, res) => {
     try {
         const { tarea } = req.body;
-        await pool.query('INSERT INTO tareas (descripcion) VALUES ($1)', [tarea]);
-        res.json({ mensaje: 'Tarea guardada!' });
+        const resultado = await pool.query(
+            'INSERT INTO tareas (descripcion) VALUES ($1) RETURNING *', 
+            [tarea]
+        );
+        res.json(resultado.rows[0]);
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: error.message });
@@ -34,6 +37,27 @@ app.get('/api/tareas', async (req, res) => {
         res.json(resultado.rows);
     }catch (error) {
         res.status(500).json({ error: error.message })
+    }
+});
+
+app.delete('/api/tareas/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        await pool.query('DELETE FROM tareas WHERE id = $1', [id]);
+        res.json({ mensaje: 'Tarea eliminada!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/tareas/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { tarea } = req.body;
+        await pool.query('UPDATE tareas SET descripcion = $1 WHERE id = $2', [tarea, id]);
+        res.json({ mensaje: 'Tarea actualizada!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
